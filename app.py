@@ -19,7 +19,6 @@ if __name__ == '__main__':
         sentence = st.text_input("Enter your post content here")
         predict_btt = st.button("Predict")
 
-    st.markdown("--- # Prediction Results Section")
     # Prediction Results Section
     if predict_btt:
         with st.container():
@@ -62,7 +61,6 @@ if __name__ == '__main__':
             # Repeat disclaimer
             st.warning("Disclaimer: This tool is for informational purposes only and should not be considered a substitute for professional medical or mental health advice. If you or someone you know is in crisis, please seek help immediately.")
 
-    st.markdown("--- # Resources Section")
     # Add resources section
     with st.container():
         st.subheader("Need Immediate Help?")
