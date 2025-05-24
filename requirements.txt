@@ -7,4 +7,3 @@ scikit-learn==1.1.3
 neattext==0.1.3
 tqdm==4.66.2
 plotly==5.20.0
-ipykernel
