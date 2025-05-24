@@ -5,7 +5,7 @@ from tensorflow.keras.models import load_model
 import plotly.express as px
 import pandas as pd
 
-token_form = pickle.load(open(r'models\tokenizer.pkl', 'rb'))
+token_form = pickle.load(open('models\tokenizer.pkl', 'rb'))
 model = load_model("models\model.h5")
 
 if __name__ == '__main__':
