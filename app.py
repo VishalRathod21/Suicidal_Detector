@@ -5,8 +5,8 @@ from tensorflow.keras.models import load_model
 import plotly.express as px
 import pandas as pd
 
-token_form = pickle.load(open('models\tokenizer.pkl', 'rb'))
-model = load_model("models\model.h5")
+token_form = pickle.load(open('models/tokenizer.pkl', 'rb'))
+model = load_model("models/model.h5")
 
 if __name__ == '__main__':
     st.title('Suicidal Post Detection App ')
