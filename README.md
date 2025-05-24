@@ -1,73 +1,128 @@
-# Suicidal Post Detection App
+# Suicidal Post Detection System
 
-## Overview
+A machine learning-based system for detecting potential suicidal content in text, with a focus on providing immediate resources and support.
 
-This application is a Streamlit-based tool designed to analyze text content (posts) and predict the likelihood of them containing suicidal ideation. It serves as a preliminary screening tool.
+## Problem Statement
 
-**Important Disclaimer:**
-This tool is **for informational purposes only** and should **not** be considered a substitute for professional medical or mental health advice. If you or someone you know is in crisis, please seek help immediately from qualified professionals or emergency services. The application's predictions are based on a machine learning model and may not always be accurate.
+Suicide is a critical public health issue, with social media often being a platform where individuals express their distress. Early detection of suicidal ideation in online content can help in timely intervention and potentially save lives. This project aims to:
 
-## How it Works
+- Detect potential suicidal content in text
+- Provide immediate access to mental health resources
+- Offer a user-friendly interface for content analysis
+- Support multiple input methods (direct text, file upload)
 
-The application utilizes a pre-trained machine learning model (specifically, an LSTM model trained with GLoVe embeddings) to process input text. The text is tokenized and padded to a fixed sequence length before being fed into the model. The model outputs a probability score, which is then used to classify the post as either "Potential Suicide Post" or "Non Suicide Post". A bar chart visualizes the confidence level of the prediction.
+## Technical Approach
 
-## Setup
+The system is built using a modern microservices architecture:
 
-To run this application locally, follow these steps:
+### Backend (FastAPI)
+- RESTful API for model serving
+- Input validation using Pydantic
+- Error handling and logging
+- Scalable model deployment
 
-1.  **Ensure you have Python installed** (version 3.6 or higher recommended). You can download it from [python.org](https://www.python.org/).
+### Frontend (Streamlit)
+- Interactive web interface
+- Real-time predictions
+- Visual feedback with probability distributions
+- File upload support
+- Language selection (currently English)
 
-2.  **Clone the repository** (if the code is hosted on a version control platform):
+## Model Architecture
 
+The system uses a deep learning model with the following specifications:
+
+- **Model Type**: LSTM with GloVe embeddings
+- **Input**: Text sequences (max length: 50 tokens)
+- **Output**: Binary classification (suicidal/non-suicidal)
+
+
+
+## Dataset Details
+
+- **Source**: [Kaggle - Suicide Detection from Reddit Posts](https://www.kaggle.com/datasets/nikhileswarkomati/suicide-watch)
+- **Size**: ~20,000 Reddit posts
+- **Classes**:
+  - `Suicidal`
+  - `Non-Suicidal`
+
+
+## Installation
+
+1. Clone the repository:
     ```bash
-    git clone <repository_url>
-    cd suicidal_post_detection_app
-    ```
-    *(Replace `<repository_url>` with the actual URL of your repository and `suicidal_post_detection_app` with your project directory name)*
+git clone [repository-url]
+cd suicidal-depression-detection
+```
 
-3.  **Navigate to the project directory** in your terminal.
+2. Create a virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-4.  **Install the required Python packages** by running the following command. This assumes you have a `requirements.txt` file generated with all dependencies.
-
+3. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-    *(If you don't have a `requirements.txt`, you can create one by running `pip freeze > requirements.txt` after installing the necessary libraries like `streamlit`, `tensorflow`, `pandas`, `plotly`, etc.)*
-
-5.  **Obtain the trained machine learning model files.** You need `tokenizer.pkl` and `model.h5`. These files should be placed inside a directory named `models` at the root level of your project directory. The expected path is `./models/tokenizer.pkl` and `./models/model.h5`.
-    *(Note: The model files are typically large and might not be included in the repository. Instructions on where to download them should be provided if they are not committed.)*
 
 ## Running the Application
 
-1.  Open your terminal and navigate to the root directory of the project (where `app.py` is located).
+### Local Development
 
-2.  Run the Streamlit application using the command:
+1. Start the FastAPI backend:
+```bash
+python api.py
+```
+The API will be available at `http://localhost:8000`
 
+2. Start the Streamlit frontend:
     ```bash
     streamlit run app.py
     ```
+The web interface will be available at `http://localhost:8501`
 
-3.  The application will open in your default web browser, or provide a local URL (usually `http://localhost:8501`) that you can open.
+### API Documentation
 
-## Project Structure
+FastAPI provides automatic API documentation:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
-```
-suicidal_post_detection_app/
-├── app.py           # Main Streamlit application file
-├── requirements.txt   # List of Python dependencies
-└── models/          # Directory containing the ML model files
-    ├── tokenizer.pkl  # Tokenizer object
-    └── model.h5       # Trained Keras model
-```
+## Usage
+
+1. Access the web interface at `http://localhost:8501`
+2. Choose your input method:
+   - Direct text input
+   - File upload (.txt files)
+3. Select the language (currently English)
+4. Click "Predict" to analyze the content
+5. View the results:
+   - Binary classification (Suicidal/Non-suicidal)
+   - Confidence scores
+   - Probability distribution
+
+## Screenshots
+
+[To be added: Screenshots of the application interface]
+
+## Model Performance
+
+[To be added: Model performance metrics and visualizations]
+
+## Mental Health Resources
+
+The application provides immediate access to mental health resources, particularly for users in India:
+
+- **Vandrevala Foundation**: +91 9999 666 555 (24x7, Call/WhatsApp)
+- **AASRA**: 09820466726 (24x7, Hindi/English)
+- **KIRAN Mental Health Helpline**: 18005990019 (24x7)
+- **Jeevan Aastha Helpline**: 1800 233 3330 (24x7)
+- **Fortis Stress Helpline**: +91-8376804102 (24x7)
+
+## Disclaimer
+
+This tool is for informational purposes only and should not be considered a substitute for professional medical or mental health advice. If you or someone you know is in crisis, please seek help immediately.
 
 ## Contributing
 
-If you'd like to contribute to this project, please feel free to fork the repository and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-*(Add license information here, e.g., MIT, Apache 2.0, etc.)*
-
-## Contact
-
-If you have any questions or feedback, feel free to reach out. 
+Contributions are welcome! Please feel free to submit a Pull Request.

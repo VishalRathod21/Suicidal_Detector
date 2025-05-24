@@ -1,12 +1,11 @@
 import streamlit as st
-import pickle
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import load_model
 import plotly.express as px
 import pandas as pd
+import requests
+import json
 
-token_form = pickle.load(open('models/tokenizer.pkl', 'rb'))
-model = load_model("models/model.h5")
+token_form = pickle.load(open(r'models\tokenizer.pkl', 'rb'))
+model = load_model("models\model.h5")
 
 if __name__ == '__main__':
     st.title('Suicidal Post Detection App ')
@@ -19,48 +18,68 @@ if __name__ == '__main__':
         sentence = st.text_input("Enter your post content here")
         predict_btt = st.button("Predict")
 
+    st.markdown("--- # Prediction Results Section")
     # Prediction Results Section
     if predict_btt:
-        with st.container():
-            # Define the post
-            st.write("Post: " +sentence)
-            twt = [sentence]
-            twt = token_form.texts_to_sequences(twt)
-            twt = pad_sequences(twt, maxlen=50)
+        if not sentence:
+            st.error("Please enter some text or upload a file to analyze.")
+        else:
+            with st.spinner('Analyzing text...'):
+                try:
+                    # Make API call
+                    response = requests.post(
+                        f"{API_URL}/predict",
+                        json={"text": sentence}
+                    )
+                    response.raise_for_status()
+                    result = response.json()
+                    
+                    # Print the prediction
+                    st.subheader("Analysis Results")
+                    if result["is_suicidal"]:
+                        st.error("Result: Potential Suicide Post")
+                    else:
+                        st.success("Result: Non Suicide Post")
+                    
+                    st.write("Confidence Level:")
+                    class_label = ["Potential Suicide Post", "Non Suicide Post"]
+                    prob_list = [result["prediction"] * 100, (1 - result["prediction"]) * 100]
+                    prob_dict = {"Category": class_label, "Probability (%)": prob_list}
+                    df_prob = pd.DataFrame(prob_dict)
+                    fig = px.bar(df_prob, x='Category', y='Probability (%)', text='Probability (%)')
+                    fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                    model_option = "LSTM+GLove"
+                    
+                    # Improve probability explanation
+                    st.write(f"The {model_option} model analyzes your post. Here's the probability distribution:")
 
-            # Predict the ideation
-            prediction = model.predict(twt)[0][0]
-            # Print the prediction
-            st.subheader("Prediction Results:")
-            if(prediction > 0.5):
-                 st.error("Result: Potential Suicide Post") # Using st.error for emphasis
-            else:
-                st.success("Result: Non Suicide Post")
-            
-            st.write("Confidence Level:")
-            class_label = ["Potential Suicide Post","Non Suicide Post"]
-            prob_list = [prediction*100,100-prediction*100]
-            prob_dict = {"Category":class_label,"Probability (%)":prob_list}
-            df_prob = pd.DataFrame(prob_dict)
-            fig = px.bar(df_prob, x='Category', y='Probability (%)', text='Probability (%)')
-            fig.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
-            model_option = "LSTM+GLove"
-            
-            # Improve probability explanation
-            st.write(f"The {{model_option}} model analyzes your post. Here's the probability distribution:")
+                    # Update layout title
+                    fig.update_layout(
+                        title_text=f"{model_option} Model Prediction Probability Comparison",
+                        xaxis_title="Category",
+                        yaxis_title="Probability (%)"
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
 
-            # Update layout title
-            fig.update_layout(
-                title_text=f"{{model_option}} Model Prediction Probability Comparison",
-                xaxis_title="Category",
-                yaxis_title="Probability (%)"
-            )
-            
-            st.plotly_chart(fig, use_container_width=True)
+                    # Feedback Section
+                    st.markdown("### Was this analysis helpful?")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.button("👍 Yes", use_container_width=True):
+                            st.success("Thank you for your feedback!")
+                    with col2:
+                        if st.button("👎 No", use_container_width=True):
+                            st.info("Thank you for your feedback. We're constantly working to improve our analysis.")
+
+                except requests.exceptions.RequestException as e:
+                    st.error(f"Error connecting to the API: {str(e)}")
+                    st.info("Please make sure the API server is running on http://localhost:8000")
 
             # Repeat disclaimer
             st.warning("Disclaimer: This tool is for informational purposes only and should not be considered a substitute for professional medical or mental health advice. If you or someone you know is in crisis, please seek help immediately.")
 
+    st.markdown("--- # Resources Section")
     # Add resources section
     with st.container():
         st.subheader("Need Immediate Help?")
