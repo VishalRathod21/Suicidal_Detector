@@ -50,7 +50,7 @@ The system uses a deep learning model with the following specifications:
 ## Installation
 
 1. Clone the repository:
-    ```bash
+ ```bash
 git clone [repository-url]
 cd suicidal-depression-detection
 ```
@@ -100,14 +100,6 @@ FastAPI provides automatic API documentation:
    - Binary classification (Suicidal/Non-suicidal)
    - Confidence scores
    - Probability distribution
-
-## Screenshots
-
-[To be added: Screenshots of the application interface]
-
-## Model Performance
-
-[To be added: Model performance metrics and visualizations]
 
 ## Mental Health Resources
 
